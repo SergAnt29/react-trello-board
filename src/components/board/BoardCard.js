@@ -24,6 +24,10 @@ const Card = styled.section`
     cursor: ${props => props.dashed ? "normal" : "pointer"};;
     box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.25);
     transition: box-shadow 0.16s ease-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
     &:hover {
         box-shadow: ${props => props.dashed ? "0px 0px 0px 0px rgba(0,0,0,0.25)" : "0px 0px 10px 2px rgba(0,0,0,0.25)"};;
     }
@@ -31,6 +35,7 @@ const Card = styled.section`
 
 const Title = styled.h2`
     font-size: 1rem;
+    text-align: center;
 `
 
 const BoardCard = ({ id = null, history }) => {
