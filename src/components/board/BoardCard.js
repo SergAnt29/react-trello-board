@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect'
@@ -58,8 +58,17 @@ const Input = styled.input`
 
 const BoardCard = ({ id = null, history }) => {
     const [newBoardTitle, setNewBoardTitle] = useInputHandleChange('')
+    const [validationError, setValidationError] = useState(false)
     const board = useSelector(state => selectBoardById(state, id))
     const dispatch = useDispatch()
+
+    const validate = (value) => {
+        if (value.length <= 50){
+            return true
+        }
+
+        return false;
+    }
 
     const handleClick = (e) => {
         if (!!id) {
@@ -69,7 +78,12 @@ const BoardCard = ({ id = null, history }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch({ type: BOARD_ADD, payload: { title: newBoardTitle } })
+
+        if (validate(newBoardTitle)){
+            dispatch({ type: BOARD_ADD, payload: { title: newBoardTitle } })
+        }else{
+            setValidationError('Board title length must be less then 50 symbols')
+        }
     }
 
     return (
@@ -80,7 +94,7 @@ const BoardCard = ({ id = null, history }) => {
             </>}
             {!id &&
                 <Form onSubmit={handleSubmit}>
-                    <Input onChange={setNewBoardTitle}></Input>
+                <Input onChange={setNewBoardTitle} maxLength="50" value={newBoardTitle}></Input>
                     <Button type="submit">Add new board</Button>
                 </Form>}
         </Card>
