@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect'
 import { withRouter } from "react-router";
 
 import Actions from './BoardCardActions';
+import useInputHandleChange from '../../hooks/useInputHandleChange';
 import {BOARD_ADD} from '../../store/constants';
 
 const selectBoardById = createSelector(
@@ -41,13 +42,9 @@ const Title = styled.h2`
 `
 
 const BoardCard = ({ id = null, history }) => {
-    const [newBoardTitle, setNewBoardTitle] = useState('')
+    const [newBoardTitle, setNewBoardTitle] = useInputHandleChange('')
     const board = useSelector(state => selectBoardById(state, id))
     const dispatch = useDispatch()
-
-    const handleChange = (e) => {
-        setNewBoardTitle(e.target.value)
-    }
 
     const handleClick = (e) => {
         if (!!id) {
@@ -67,7 +64,7 @@ const BoardCard = ({ id = null, history }) => {
                 <Title>{board.title}</Title>
             </>}
             {!id && <form onSubmit={handleSubmit}>
-                <input onChange={handleChange}></input>
+                <input onChange={setNewBoardTitle}></input>
                 <button type="submit">+</button>
             </form>}
         </Card>
