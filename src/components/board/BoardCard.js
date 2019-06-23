@@ -14,20 +14,22 @@ const selectBoardById = createSelector(
 )
 
 const Card = styled.section`
+    box-sizing: border-box;
     border: 1px solid black;
     border-radius: 5px;
     min-height: 100px;
-    width: 225px;
+    width: 100%;
     position: relative;
     border-style: ${props => props.dashed ? "dashed" : "solid"};
     padding: 10px;
-    cursor: ${props => props.dashed ? "normal" : "pointer"};;
+    cursor: ${props => props.dashed ? "normal" : "pointer"};
     box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.25);
     transition: box-shadow 0.16s ease-out;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px;
+    margin-bottom: 10px;
+    margin-top:10px;
     &:hover {
         box-shadow: ${props => props.dashed ? "0px 0px 0px 0px rgba(0,0,0,0.25)" : "0px 0px 10px 2px rgba(0,0,0,0.25)"};;
     }
@@ -43,7 +45,7 @@ const BoardCard = ({ id = null, history }) => {
     const board = useSelector(state => selectBoardById(state, id))
     const dispatch = useDispatch()
 
-    const hadleChange = (e) => {
+    const handleChange = (e) => {
         setNewBoardTitle(e.target.value)
     }
 
@@ -65,7 +67,7 @@ const BoardCard = ({ id = null, history }) => {
                 <Title>{board.title}</Title>
             </>}
             {!id && <form onSubmit={handleSubmit}>
-                <input onChange={hadleChange}></input>
+                <input onChange={handleChange}></input>
                 <button type="submit">+</button>
             </form>}
         </Card>
