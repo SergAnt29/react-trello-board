@@ -1,7 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
-import { BOARD_REMOVE } from '../../store/constants'
+import React from 'react';
+import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+
+import { boardRemove } from '../../store/actions/boards';
 
 const ActionsWrapper = styled.div`
     position: absolute;
@@ -20,14 +21,14 @@ const Button = styled.button`
 const BoardCardActions = ({ id }) => {
     const dispatch = useDispatch()
 
-    const handleClick = (e) => {
+    const handleClick = (action, e) => {
         e.stopPropagation();
-        dispatch({ type: BOARD_REMOVE, payload: { id } })
+        dispatch(action({ id }))
     }
 
     return (
         <ActionsWrapper>
-            <Button onClick={handleClick}>Remove</Button>
+            <Button onClick={(e) => handleClick(boardRemove, e)}>Remove</Button>
         </ActionsWrapper>
     )
 }

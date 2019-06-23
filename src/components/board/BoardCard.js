@@ -6,7 +6,9 @@ import { withRouter } from "react-router";
 
 import Actions from './BoardCardActions';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
-import { BOARD_ADD } from '../../store/constants';
+import useBooleanToggle from '../../hooks/useBooleanToggle';
+
+import { boardAdd } from '../../store/actions/boards';
 
 const selectBoardById = createSelector(
     state => state.boards,
@@ -57,14 +59,14 @@ const Input = styled.input`
 `
 
 const BoardCard = ({ id = null, history }) => {
-    const [newBoardTitle, setNewBoardTitle] = useInputHandleChange('')
-    const [validationError, setValidationError] = useState(false)
-    const board = useSelector(state => selectBoardById(state, id))
+    const [newBoardTitle, setNewBoardTitle] = useInputHandleChange('');
+    const [validationError, setValidationError] = useState(false);
+    const board = useSelector(state => selectBoardById(state, id));
     const dispatch = useDispatch()
 
     const validate = (value) => {
         if (value.length <= 50){
-            return true
+            return true;
         }
 
         return false;
@@ -72,7 +74,7 @@ const BoardCard = ({ id = null, history }) => {
 
     const handleClick = (e) => {
         if (!!id) {
-            history.push(`/boards/${board.alias}`)
+            history.push(`/boards/${board.alias}`);
         }
     }
 
@@ -80,7 +82,7 @@ const BoardCard = ({ id = null, history }) => {
         e.preventDefault();
 
         if (validate(newBoardTitle)){
-            dispatch({ type: BOARD_ADD, payload: { title: newBoardTitle } })
+            dispatch(boardAdd({ title: newBoardTitle}));
             setNewBoardTitle('')
         }else{
             setValidationError('Board title length must be less then 50 symbols')
