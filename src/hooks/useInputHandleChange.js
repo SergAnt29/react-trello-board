@@ -4,8 +4,12 @@ const useInputHandleChange = (initialValue) => {
     let [value, setValue] = useState(initialValue);
 
     const handleInputChange = (event) => {
-        event.preventDefault();
+        if(typeof event === 'string'){
+            setValue(event);
+            return;
+        }
 
+        event.preventDefault();
         setValue(event.target.value);
     }
 

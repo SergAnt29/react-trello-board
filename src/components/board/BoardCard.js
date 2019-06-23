@@ -81,6 +81,7 @@ const BoardCard = ({ id = null, history }) => {
 
         if (validate(newBoardTitle)){
             dispatch({ type: BOARD_ADD, payload: { title: newBoardTitle } })
+            setNewBoardTitle('')
         }else{
             setValidationError('Board title length must be less then 50 symbols')
         }
