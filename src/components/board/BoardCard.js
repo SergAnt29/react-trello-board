@@ -6,7 +6,7 @@ import { withRouter } from "react-router";
 
 import Actions from './BoardCardActions';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
-import {BOARD_ADD} from '../../store/constants';
+import { BOARD_ADD } from '../../store/constants';
 
 const selectBoardById = createSelector(
     state => state.boards,
@@ -39,6 +39,21 @@ const Card = styled.section`
 const Title = styled.h2`
     font-size: 1rem;
     text-align: center;
+    word-break: break-all;
+`
+
+const Form = styled.form`
+    width:90%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+`
+const Button = styled.button`
+    width:100%;
+    margin-top: 10px;
+`
+const Input = styled.input`
+    width:100%;
 `
 
 const BoardCard = ({ id = null, history }) => {
@@ -54,19 +69,20 @@ const BoardCard = ({ id = null, history }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch({type: BOARD_ADD, payload: {title: newBoardTitle}})
+        dispatch({ type: BOARD_ADD, payload: { title: newBoardTitle } })
     }
 
     return (
         <Card dashed={!id} onClick={handleClick}>
-            {!!id && <Actions {...board}/>}
+            {!!id && <Actions {...board} />}
             {!!id && <>
                 <Title>{board.title}</Title>
             </>}
-            {!id && <form onSubmit={handleSubmit}>
-                <input onChange={setNewBoardTitle}></input>
-                <button type="submit">+</button>
-            </form>}
+            {!id &&
+                <Form onSubmit={handleSubmit}>
+                    <Input onChange={setNewBoardTitle}></Input>
+                    <Button type="submit">Add new board</Button>
+                </Form>}
         </Card>
     )
 }
