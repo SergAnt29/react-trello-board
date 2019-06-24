@@ -1,8 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-
-import { boardRemove } from '../store/actions/boards';
 
 const ActionsWrapper = styled.div`
     position: absolute;
@@ -12,7 +9,6 @@ const ActionsWrapper = styled.div`
     right:0;
     display: flex;
     justify-content: flex-end;
-    
 `
 
 const Button = styled.button`

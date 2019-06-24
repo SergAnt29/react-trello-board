@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect'
 import { withRouter } from "react-router";
 
-import ActionButtons from '../ActionButtons';
+import ActionButtons from '../shared/ActionButtons';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
-
+import InputForm from '../shared/InputForm';
 import { boardAdd, boardRemove } from '../../store/actions/boards';
 
 const selectBoardById = createSelector(
@@ -65,23 +65,9 @@ const ErrorMessage = styled.p`
 `
 
 const BoardCard = ({ id = null, history }) => {
-    const [title, settitle] = useInputHandleChange('');
-    const [validationError, setValidationError] = useState(false);
+    const [title, setTitle] = useInputHandleChange('');
     const board = useSelector(state => selectBoardById(state, id));
     const dispatch = useDispatch()
-
-    // Validation error reset on title typing
-    useEffect(() => {
-        setValidationError(false)
-    }, [title])
-
-    const validate = (value) => {
-        if (value.length > 2){
-            return true;
-        }
-
-        return false;
-    }
 
     const handleClick = (e) => {
         if (!!id) {
@@ -91,7 +77,7 @@ const BoardCard = ({ id = null, history }) => {
 
     const handleBoardRemove = (e) => {
         e.stopPropagation();
-        dispatch(boardRemove({id}));
+        dispatch(boardRemove({ id }));
     }
 
     const handleBoardEdit = (e) => {
@@ -99,29 +85,28 @@ const BoardCard = ({ id = null, history }) => {
         // TODO: implement edit functionality 
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (validate(title)){
-            dispatch(boardAdd({ title}));
-            settitle('')
-        }else{
-            setValidationError('Board title length must be equal or greater then 2 symbols')
-        }
+    const handleBoardAdd = () => {
+        dispatch(boardAdd({ title }));
+        setTitle('')
     }
 
     return (
         <Card dashed={!id} onClick={handleClick}>
-            {!!id && <ActionButtons onRemove={handleBoardRemove} onEdit={handleBoardEdit}/>}
+            {!!id && <ActionButtons onRemove={handleBoardRemove} onEdit={handleBoardEdit} />}
             {!!id && <>
                 <Title>{board.title}</Title>
             </>}
             {!id &&
-                <Form onSubmit={handleSubmit}>
-                <Input onChange={settitle} maxLength="50" value={title}></Input>
-                    <Button type="submit">Add new board</Button>
-                </Form>}
-            {!!validationError && <ErrorMessage>{validationError}</ErrorMessage>}
+                <InputForm
+                    onSubmit={handleBoardAdd}
+                    onChange={setTitle}
+                    maxLength="50"
+                    minLength="2"
+                    value={title}
+                    buttonText="Add new board"
+                    required={true}
+                />
+            }
         </Card>
     )
 }
