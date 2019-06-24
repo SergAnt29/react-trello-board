@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {createSelector} from 'reselect';
 import styled from 'styled-components';
 
 import TaskModal from '../shared/TaskModal';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
-import {} from '../../store/actions/cards';
+import {cardAdd} from '../../store/actions/cards';
 
 
 const TicketCard = styled.section`
@@ -27,10 +27,14 @@ const Title = styled.h4`
     font-size: 0.8rem;
     text-align:left;
     width:100%;
-    margin: 0;
+    margin:0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px dotted grey;
 `
 const ShortDescription = styled.p`
     font-size: 0.8rem;
+    width:100%;
+    text-align:left;
 `
 
 const Content = styled.div`
@@ -52,13 +56,16 @@ const selectCardById = createSelector(
 )
 
 
-const Card = ({ id }) => {
+const Card = ({ id, columnId }) => {
     const [isModalOpen, toggleModalOpen] = useBooleanToggle(false);
     const card = useSelector(state => selectCardById(state, id));
+    const dispatch = useDispatch();
 
-    const handleAddNewCard = (e) => {
-        console.log('CARD', e)
-
+    const handleAddNewCard = (payload) => {
+        dispatch(cardAdd({
+            columnId,
+            ...payload,
+        }))
         toggleModalOpen()
     }
 
@@ -71,7 +78,7 @@ const Card = ({ id }) => {
                     <ShortDescription>{card.shortDescription}</ShortDescription>
                 </>} 
                 
-                {!id && <Button onClick={handleAddNewCard}>Add new card</Button>}
+                {!id && <Button onClick={toggleModalOpen}>Add new card</Button>}
             </Content>
             <TaskModal isOpen={isModalOpen} closeModal={toggleModalOpen} onSubmit={handleAddNewCard}>
             </TaskModal>

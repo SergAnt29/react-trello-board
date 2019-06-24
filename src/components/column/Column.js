@@ -110,9 +110,9 @@ const Column = ({ id, boardId, title }) => {
                 </Header>
                 {!!id && <Content>
                     {cards.map(card => (
-                        <Card key={card.id} {...card}/>
+                        <Card key={card.id} {...card} columnId={id}/>
                     ))}
-                    <Card />
+                    <Card columnId={id}/>
                 </Content>}
             </ColumnTag>
         </ColumnWrapper>

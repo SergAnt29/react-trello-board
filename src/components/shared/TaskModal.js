@@ -75,6 +75,7 @@ const TextArea = styled.textarea`
     border-width: 1px;
     resize: none;
     height: 50px;
+    font-family: Arial, Helvetica, sans-serif;
 `
 const BigTextArea = styled(TextArea)`
     height: 150px;
