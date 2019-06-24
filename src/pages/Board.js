@@ -1,12 +1,19 @@
 import React from 'react';
 import { createSelector } from 'reselect';
 import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import styled from 'styled-components';
+
+import Column from '../components/column/Column';
 import Header from '../components/Header';
 import Page from '../layout/Page';
 import FullWidthContainer from '../layout/FullWidthContainer';
-import Row from '../layout/grid/Row';
-import Column from '../layout/grid/Column';
-import { withRouter } from 'react-router-dom';
+import ContainerHorizontalScrollable from '../layout/ContainerHorizontalScrollable';
+
+
+const ColumnsWrapper = styled(ContainerHorizontalScrollable)`
+    padding: 10px 0;
+`
 
 const selectBoardByAlias = createSelector(
     state => state.boards,
@@ -28,9 +35,12 @@ const Board = ({ match }) => {
         <Page>
             <FullWidthContainer>
                 <Header title={`${board.title} | Board`}></Header>
-                <Row>
-                    {board.alias}
-                </Row>
+                <ColumnsWrapper>
+                    {columns && columns.length > 0 && columns.map((column) => (
+                        <Column boardId={board.id} {...column}></Column>
+                    ))}
+                    <Column boardId={board.id}></Column>
+                </ColumnsWrapper>
             </FullWidthContainer>
         </Page>
     )
