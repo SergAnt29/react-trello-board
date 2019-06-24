@@ -1,12 +1,13 @@
-import React, {useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {createSelector} from 'reselect';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { createSelector } from 'reselect';
 import styled from 'styled-components';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import TaskModal from '../shared/TaskModal';
 import ActionButtons from '../shared/ActionButtons';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
-import {cardAdd, cardRemove, cardEdit} from '../../store/actions/cards';
+import { cardAdd, cardRemove, cardEdit } from '../../store/actions/cards';
 
 
 const TicketCard = styled.section`
@@ -55,7 +56,7 @@ const selectCardById = createSelector(
 )
 
 
-const Card = ({ id, columnId }) => {
+const Card = ({ id, columnId, index }) => {
     const [isModalOpen, toggleModalOpen] = useBooleanToggle(false);
     const [isEdit, toggleIsEdit] = useBooleanToggle(false);
     const card = useSelector(state => selectCardById(state, id));
@@ -84,34 +85,56 @@ const Card = ({ id, columnId }) => {
     }
 
     const handleCardRemove = () => {
-        dispatch(cardRemove({id}))
+        dispatch(cardRemove({ id }))
     }
 
-    return (
-        <TicketCard>
-             {!isModalOpen && <ActionButtons
+    const renderTicketCard = () => {
+        return (
+            <TicketCard>
+                {!isModalOpen && <ActionButtons
                     onRemove={!!id ? handleCardRemove : false}
                     onEdit={!!id ? handleEditModal : false}
                 />}
-            <Content empty={!id}>
-                {!!id && <>
-                    <Title>{card.title}</Title>
-                    <ShortDescription>{card.shortDescription}</ShortDescription>
-                </>} 
-                
-                {!id && <Button onClick={toggleModalOpen}>Add new card</Button>}
-            </Content>
-            <TaskModal 
-                isOpen={isModalOpen} 
-                closeModal={toggleModalOpen} 
-                onSubmit={isEdit ? handleCardEdit : handleCardAdd}
-                oldTitle={card ? card.title : ''}
-                oldShortDescription={card? card.shortDescription : ''}
-                oldDescription={card? card.description : ''}
-            >
-            </TaskModal>
-        </TicketCard>
-    )
+                <Content empty={!id}>
+                    {!!id && <>
+                        <Title>{card.title}</Title>
+                        <ShortDescription>{card.shortDescription}</ShortDescription>
+                    </>}
+
+                    {!id && <Button onClick={toggleModalOpen}>Add new card</Button>}
+                </Content>
+                <TaskModal
+                    isOpen={isModalOpen}
+                    closeModal={toggleModalOpen}
+                    onSubmit={isEdit ? handleCardEdit : handleCardAdd}
+                    oldTitle={card ? card.title : ''}
+                    oldShortDescription={card ? card.shortDescription : ''}
+                    oldDescription={card ? card.description : ''}
+                >
+                </TaskModal>
+            </TicketCard>
+        )
+    }
+
+    if(!!id){
+        return (
+            <Draggable draggableId={id} index={index}>
+                {provided => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                    >
+                        {renderTicketCard()}
+                    </div>
+    
+                )}
+            </Draggable>
+    
+        )
+    }
+
+    return renderTicketCard()
 }
 
 export default Card;

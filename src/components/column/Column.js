@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
+import {  compareByIndex } from '../../utils/arrayUtils';
 import ActionButtons from '../shared/ActionButtons';
 import InputForm from '../shared/InputForm';
 import Card from '../card/Card';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
 import { columnAdd, columnEdit, columnRemove } from '../../store/actions/columns';
+import { cardMoveVertically } from '../../store/actions/cards';
+
 
 const ColumnWrapper = styled.div`
     width: 300px;
@@ -52,6 +56,7 @@ const selectCardsByColumnId = createSelector(
     (_, id) => id,
     (cards, id) => cards
         .filter(card => card.columnId === id)
+        .sort(compareByIndex)
         .map(({ id }) => ({ id }))
 )
 
@@ -87,6 +92,26 @@ const Column = ({ id, boardId, title }) => {
         toggleEditable();
     }
 
+    const onDragEnd = (e) => {
+        const { source, destination } = e;
+
+        // dropped outside the list
+        if (!destination) {
+            return;
+        }
+
+        if (source.droppableId === destination.droppableId) {
+            dispatch(cardMoveVertically(
+                { 
+                    id: source.droppableId, 
+                    source: source.index, 
+                    destination: destination.index 
+                }))
+        } else {
+
+        }
+    }
+
     return (
         <ColumnWrapper>
             <ColumnTag>
@@ -108,12 +133,25 @@ const Column = ({ id, boardId, title }) => {
                         />
                     }
                 </Header>
-                {!!id && <Content>
-                    {cards.map(card => (
-                        <Card key={card.id} {...card} columnId={id}/>
-                    ))}
-                    <Card columnId={id}/>
-                </Content>}
+                <DragDropContext onDragEnd={onDragEnd}>
+                    {!!id && <Content>
+                        <Droppable droppableId={id}>
+                            {(provided, snapshot) => (
+                                <div
+                                    ref={provided.innerRef}
+                                >
+                                    {cards.map((card, index) => (
+                                        <Card key={card.id} {...card} columnId={id} index={index} />
+                                    ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+
+                        <Card columnId={id} />
+                    </Content>}
+                </DragDropContext>
+
             </ColumnTag>
         </ColumnWrapper>
     )

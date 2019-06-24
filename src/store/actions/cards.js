@@ -26,4 +26,15 @@ const cardEdit = (payload) => {
     }
 }
 
-export { cardAdd, cardRemove, cardEdit }
+const cardMoveVertically = ({id, source, destination}) => {
+    return {
+        type:CARD_MOVE_IN_COLUMN,
+        payload:{
+            id,
+            source,
+            destination
+        }
+    }
+}
+
+export { cardAdd, cardRemove, cardEdit, cardMoveVertically }
