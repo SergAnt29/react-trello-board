@@ -5,12 +5,13 @@ import styled from 'styled-components';
 
 import ActionButtons from '../shared/ActionButtons';
 import InputForm from '../shared/InputForm';
+import Card from '../card/Card';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
 import { columnAdd, columnEdit, columnRemove } from '../../store/actions/columns';
 
 const ColumnWrapper = styled.div`
-    width: 250px;
+    width: 300px;
     margin: 0 10px;
     flex-shrink: 0;
 `
@@ -43,12 +44,15 @@ const Content = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 10px 10px;
 `
 
 const selectCardsByColumnId = createSelector(
     state => state.cards,
     (_, id) => id,
-    (cards, id) => cards.filter(card => card.columnId === id)
+    (cards, id) => cards
+        .filter(card => card.columnId === id)
+        .map(({ id }) => ({ id }))
 )
 
 const selectColumnById = createSelector(
@@ -79,7 +83,7 @@ const Column = ({ id, boardId, title }) => {
     }
 
     const handleColumnEdit = () => {
-        dispatch(columnEdit({ id,  title: columnTitle}))
+        dispatch(columnEdit({ id, title: columnTitle }))
         toggleEditable();
     }
 
@@ -91,7 +95,7 @@ const Column = ({ id, boardId, title }) => {
                         onRemove={!!id ? handleColumnRemove : false}
                         onEdit={!!id ? toggleEditable : false}
                     />}
-                    {!!title && !isEditable ?
+                    {!!id && !isEditable ?
                         <Title>{title}</Title> :
                         <InputForm
                             onSubmit={isEditable ? handleColumnEdit : handleColumnAdd}
@@ -104,11 +108,12 @@ const Column = ({ id, boardId, title }) => {
                         />
                     }
                 </Header>
-                <Content>
+                {!!id && <Content>
                     {cards.map(card => (
-                        <div>1111</div>
+                        <Card key={card.id} {...card}/>
                     ))}
-                </Content>
+                    <Card />
+                </Content>}
             </ColumnTag>
         </ColumnWrapper>
     )
