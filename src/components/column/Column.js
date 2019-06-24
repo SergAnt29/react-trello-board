@@ -10,8 +10,9 @@ import useInputHandleChange from '../../hooks/useInputHandleChange';
 import { columnAdd, columnEdit, columnRemove } from '../../store/actions/columns';
 
 const ColumnWrapper = styled.div`
-    max-width: 250px;
+    width: 250px;
     margin: 0 10px;
+    flex-shrink: 0;
 `
 
 const ColumnTag = styled.div`
@@ -34,7 +35,7 @@ const Header = styled.header`
 `
 
 const Title = styled.h3`
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     word-break: break-all;
 `
 
@@ -55,30 +56,45 @@ const Column = ({ id, boardId, title }) => {
     const column = useSelector(state => selectColumnById(state, id));
     const [columnTitle, setColumnTitle] = useInputHandleChange(title);
     const dispatch = useDispatch();
+    console.log('COLUMN', boardId)
 
     const handleColumnAdd = () => {
-        dispatch(columnAdd({
-            title:columnTitle,
-            boardId
-        }))
+        dispatch(columnAdd(
+            {
+                title: columnTitle,
+                boardId
+            }
+        ))
+        setColumnTitle('')
+    }
+
+    const handleColumnRemove = () => {
+        dispatch(columnRemove({ id }))
+    }
+
+    const handleColumnEdit = () => {
+        dispatch(columnEdit({ id }))
     }
 
     return (
         <ColumnWrapper>
             <ColumnTag>
                 <Header dashed={!id}>
-                    <ActionButtons />
-                    {!!title ? 
-                    <Title>{title}</Title> :
-                    <InputForm 
-                        onSubmit={handleColumnAdd}
-                        onChange={setColumnTitle}
-                        maxLength="50"
-                        minLength="2"
-                        value={columnTitle}
-                        buttonText="Add new column"
-                        required={true}
+                    <ActionButtons
+                        onRemove={!!id ? handleColumnRemove : false}
+                        onEdit={!!id ? handleColumnEdit : false}
                     />
+                    {!!title ?
+                        <Title>{title}</Title> :
+                        <InputForm
+                            onSubmit={handleColumnAdd}
+                            onChange={setColumnTitle}
+                            maxLength="50"
+                            minLength="2"
+                            value={columnTitle}
+                            buttonText="Add new column"
+                            required={true}
+                        />
                     }
                 </Header>
             </ColumnTag>

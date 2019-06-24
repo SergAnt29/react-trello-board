@@ -13,6 +13,7 @@ import ContainerHorizontalScrollable from '../layout/ContainerHorizontalScrollab
 
 const ColumnsWrapper = styled(ContainerHorizontalScrollable)`
     padding: 10px 0;
+    display: flex;
 `
 
 const selectBoardByAlias = createSelector(
@@ -24,7 +25,7 @@ const selectBoardByAlias = createSelector(
 const selectColumnsByBoardId = createSelector(
     state => state.columns,
     (_, id) => id,
-    (columns, id) => columns.filter(column => columns.boardId === id)
+    (columns, id) => columns.filter(column => column.boardId === id)
 )
 
 const Board = ({ match }) => {

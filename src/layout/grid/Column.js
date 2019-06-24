@@ -4,6 +4,7 @@ import styled from 'styled-components';
 const Column = styled.div`
     padding: 0 10px;
     box-sizing: border-box;
+    display: flex;
 
     @media (min-width: 1400px) {
         width: 20%

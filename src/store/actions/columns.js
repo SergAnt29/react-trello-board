@@ -3,15 +3,17 @@ import {COLUMN_ADD, COLUMN_EDIT, COLUMN_REMOVE} from '../constants';
 const columnAdd = ({title, boardId}) => {
     return {
         type:COLUMN_ADD,
-        title,
-        boardId,
+        payload:{
+            title,
+            boardId,
+        }
     }
 }
 
 const columnRemove = ({id}) => {
     return {
         type:COLUMN_REMOVE,
-        id
+        payload: {id}
     }
 }
 
