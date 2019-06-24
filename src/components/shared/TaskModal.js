@@ -1,6 +1,8 @@
 import React from 'react'
 import Modal from 'react-modal';
 import styled from 'styled-components';
+import { Formik, Field } from "formik";
+import * as Yup from 'yup';
 
 import useInputHanldeChange from '../../hooks/useInputHandleChange';
 
@@ -41,24 +43,45 @@ const Content = styled.div`
     justify-content: space-between;
 `
 
+const Label = styled.label`
+    color: grey;
+`
+
 const FormRow = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-top: 20px;
 `
 
 const SubmitButton = styled.button`
     margin-top: auto;
 `
 
-const TaskModal = ({ isOpen, closeModal, children }) => {
-    const [title, setTitle] = useInputHanldeChange('');
-    const [shortDescription, setShortDescription] = useInputHanldeChange('');
-    const [description, setDescription] = useInputHanldeChange('');
+const ErrorMessage = styled.div`
+    color: red;
+    font-size:0.7rem;
+`
 
-    const submitModal = (e) => {
+const TaskModal = ({ isOpen, closeModal, oldTitle = '', oldShortDescription = '', oldDescription = '' }) => {
+    const [title, setTitle] = useInputHanldeChange(oldTitle);
+    const [shortDescription, setShortDescription] = useInputHanldeChange(oldShortDescription);
+    const [description, setDescription] = useInputHanldeChange(oldDescription);
 
+    const handleSubmit = (e) => {
+        console.log('ONSUBMIT',e)
     }
+
+    const validationSchema = Yup.object().shape({
+        title: Yup.string()
+            .max(50, 'Please enter no more than 50 characters')
+            .min(2, 'Please enter no less than 2 characters')
+            .required('Please enter task title'),
+        shortDescription: Yup.string()
+            .max(100, 'Please enter no more than 100 characters'),
+        shortDescription: Yup.string()
+            .max(500, 'Please enter no more than 500 characters'),   
+    })
 
     return (
         <Modal
@@ -72,27 +95,70 @@ const TaskModal = ({ isOpen, closeModal, children }) => {
                 <CloseButton onClick={closeModal}>X</CloseButton>
             </Header>
             <Content>
-                <FormRow>
-                    <label htmlFor="title">
-                        Title
-                    </label>
-                    <input value={title} name="title" onChange={setTitle} />
-                </FormRow>
+                <Formik
+                    initialValues={{ title, shortDescription, description }}
+                    onSubmit={handleSubmit}
+                    validationSchema={validationSchema}
+                >
+                    {props => {
+                        const {
+                            values,
+                            touched,
+                            errors,
+                            dirty,
+                            isSubmitting,
+                            handleChange,
+                            handleBlur,
+                            handleSubmit,
+                            handleReset
+                        } = props;
+                        return (
+                            <form onSubmit={handleSubmit}>
+                                <FormRow>
+                                    <Label htmlFor="title">
+                                        Title
+                                    </Label>
+                                    <Field 
+                                        component="input" 
+                                        value={values.title} 
+                                        onChange={handleChange}
+                                        onBlur={handleBlur} 
+                                        name="title" 
+                                    />
+                                    {errors.title && touched.title ? <ErrorMessage>{errors.title}</ErrorMessage> : null}
+                                </FormRow>
 
-                <FormRow>
-                    <label htmlFor="short-description" >
-                        Short Description
-                </label>
-                    <textarea value={shortDescription} name="short-description" onChange={setShortDescription} />
-                </FormRow>
+                                <FormRow>
+                                    <Label htmlFor="shortDescription" >
+                                        Short Description
+                                    </Label>
+                                    <Field 
+                                        component="textarea" 
+                                        value={values.shortDescription} 
+                                        onChange={handleChange}
+                                        onBlur={handleBlur} 
+                                        name="shortDescription" 
+                                    />
+                                </FormRow>
 
-                <FormRow>
-                    <label htmlFor="description">
-                        Description
-                </label>
-                    <textarea value={description} name="description" onChange={setDescription} />
-                </FormRow>
-                <SubmitButton onClick={submitModal}>Create</SubmitButton>
+                                <FormRow>
+                                    <Label htmlFor="description">
+                                        Description
+                                    </Label>
+                                    <Field 
+                                        component="textarea" 
+                                        value={values.description} 
+                                        onChange={handleChange}
+                                        onBlur={handleBlur} 
+                                        name="description" 
+                                    />
+                                </FormRow>
+                                <SubmitButton type="submit">Create</SubmitButton>
+                            </form>
+
+                        )
+                    }}
+                </Formik>
             </Content>
 
 
