@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { createSelector } from 'reselect';
+import { withRouter } from "react-router";
 import styled from 'styled-components';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Draggable } from "react-beautiful-dnd";
 
 import TaskModal from '../shared/TaskModal';
 import ActionButtons from '../shared/ActionButtons';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
+import {selectCardById} from '../../selectors/card';
 import { cardAdd, cardRemove, cardEdit } from '../../store/actions/cards';
 
 
@@ -49,20 +50,14 @@ const Button = styled.button`
     max-width: 100px;
 `
 
-const selectCardById = createSelector(
-    state => state.cards,
-    (_, id) => id,
-    (cards, id) => cards.find(card => card.id === id)
-)
-
-
-const Card = ({ id, columnId, index }) => {
+const Card = ({ id, columnId, index, history }) => {
     const [isModalOpen, toggleModalOpen] = useBooleanToggle(false);
     const [isEdit, toggleIsEdit] = useBooleanToggle(false);
     const card = useSelector(state => selectCardById(state, id));
     const dispatch = useDispatch();
 
-    const handleEditModal = () => {
+    const handleEditModal = (e) => {
+        e.stopPropagation();
         toggleIsEdit();
         toggleModalOpen()
     }
@@ -84,13 +79,20 @@ const Card = ({ id, columnId, index }) => {
         toggleModalOpen()
     }
 
-    const handleCardRemove = () => {
+    const handleCardRemove = (e) => {
+        e.stopPropagation();
         dispatch(cardRemove({ id }))
+    }
+
+    const handleRouter = () => {
+        if (!!id) {
+            history.push(`/cards/${id}`);
+        }
     }
 
     const renderTicketCard = () => {
         return (
-            <TicketCard>
+            <TicketCard onClick={handleRouter}>
                 {!isModalOpen && <ActionButtons
                     onRemove={!!id ? handleCardRemove : false}
                     onEdit={!!id ? handleEditModal : false}
@@ -110,6 +112,7 @@ const Card = ({ id, columnId, index }) => {
                     oldTitle={card ? card.title : ''}
                     oldShortDescription={card ? card.shortDescription : ''}
                     oldDescription={card ? card.description : ''}
+                    isEdit={isEdit}
                 >
                 </TaskModal>
             </TicketCard>
@@ -137,4 +140,4 @@ const Card = ({ id, columnId, index }) => {
     return renderTicketCard()
 }
 
-export default Card;
+export default withRouter(Card);

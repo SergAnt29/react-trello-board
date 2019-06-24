@@ -22,6 +22,8 @@ const cards = (state = [], action) => {
                 {
                     id,
                     index,
+                    createdAt: +new Date(),
+                    updatedAt: +new Date(),
                     ...payload
                 }
 
@@ -104,7 +106,11 @@ const cards = (state = [], action) => {
         case CARD_EDIT:
             return state.map(card => {
                 if(card.id === payload.id){
-                    return {...card, ...payload}
+                    return {
+                        ...card, 
+                        ...payload,
+                        updatedAt: +new Date(),
+                    }
                 }
 
                 return card;

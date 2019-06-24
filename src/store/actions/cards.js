@@ -4,8 +4,6 @@ import {
     CARD_REMOVE, 
     CARD_MOVE_BETWEEN_COLUMNS, 
     CARD_MOVE_IN_COLUMN, 
-    CARD_INSERT_INTO_COLUMN, 
-    CARD_UPDATE_INDEX 
 } from './../constants';
 
 const cardAdd = ({ title, shortDescription, description, columnId }) => {
