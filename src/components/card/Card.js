@@ -2,6 +2,10 @@ import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {createSelector} from 'reselect';
 import styled from 'styled-components';
+import Modal from 'react-modal';
+import TaskModal from '../shared/TaskModal';
+import useBooleanToggle from '../../hooks/useBooleanToggle';
+
 
 const TicketCard = styled.section`
     border-radius: 5px;
@@ -46,13 +50,14 @@ const selectCardById = createSelector(
     (cards, id) => cards.find(card => card.id === id)
 )
 
-const Card = ({ id }) => {
 
+const Card = ({ id }) => {
+    const [isModalOpen, toggleModalOpen] = useBooleanToggle(false);
     const card = useSelector(state => selectCardById(state, id));
 
     const handleAddNewCard = (e) => {
         e.preventDefault();
-        
+        toggleModalOpen()
     }
 
     return (
@@ -66,6 +71,9 @@ const Card = ({ id }) => {
                 
                 {!id && <Button onClick={handleAddNewCard}>Add new card</Button>}
             </Content>
+            <TaskModal isOpen={isModalOpen}>
+                sdasdsdsadasd
+            </TaskModal>
         </TicketCard>
     )
 }

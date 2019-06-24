@@ -9,6 +9,10 @@ const GlobalStyle = createGlobalStyle`
   input, button, div, section {
     box-sizing: border-box;
   }
+
+  button {
+    cursor: pointer;
+  }
 `
 
 export default GlobalStyle;
