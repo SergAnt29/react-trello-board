@@ -22,7 +22,7 @@ const Dashboard = () => {
             <FullWidthContainer>
                 <Header title={'Dashboard'}></Header>
                 <Row>
-                    {boards.map(board => (
+                    {boards && boards.length > 0 && boards.map(board => (
                         <Column key={board.id}>
                             <BoardCard  {...board} />
                         </Column>

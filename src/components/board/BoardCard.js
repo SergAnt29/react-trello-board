@@ -1,36 +1,31 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect'
 import { withRouter } from "react-router";
 
-import Actions from './BoardCardActions';
+import ActionButtons from '../shared/ActionButtons';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
-import useBooleanToggle from '../../hooks/useBooleanToggle';
-
-import { boardAdd } from '../../store/actions/boards';
-
-const selectBoardById = createSelector(
-    state => state.boards,
-    (_, id) => id,
-    (boards, id) => boards.find(board => board.id === id)
-)
+import InputForm from '../shared/InputForm';
+import { boardAdd, boardRemove } from '../../store/actions/boards';
 
 const Card = styled.section`
-    box-sizing: border-box;
-    border: 1px solid black;
-    border-radius: 5px;
-    min-height: 100px;
-    width: 100%;
     position: relative;
-    border-style: ${props => props.dashed ? "dashed" : "solid"};
-    padding: 10px;
-    cursor: ${props => props.dashed ? "normal" : "pointer"};
-    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.25);
-    transition: box-shadow 0.16s ease-out;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-color: black;
+    border-style: ${props => props.dashed ? "dashed" : "solid"};
+    border-radius: 5px;
+    min-height: 100px;
+    width: 100%;
+    padding: 10px 20px;
+    cursor: ${props => props.dashed ? "auto" : "pointer"};
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.25);
+    transition: box-shadow 0.16s ease-out;
     margin-bottom: 10px;
     margin-top:10px;
     &:hover {
@@ -44,33 +39,16 @@ const Title = styled.h2`
     word-break: break-all;
 `
 
-const Form = styled.form`
-    width:90%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-`
-const Button = styled.button`
-    width:100%;
-    margin-top: 10px;
-`
-const Input = styled.input`
-    width:100%;
-`
+const selectBoardById = createSelector(
+    state => state.boards,
+    (_, id) => id,
+    (boards, id) => boards.find(board => board.id === id)
+)
 
 const BoardCard = ({ id = null, history }) => {
-    const [newBoardTitle, setNewBoardTitle] = useInputHandleChange('');
-    const [validationError, setValidationError] = useState(false);
+    const [title, setTitle] = useInputHandleChange('');
     const board = useSelector(state => selectBoardById(state, id));
     const dispatch = useDispatch()
-
-    const validate = (value) => {
-        if (value.length <= 50){
-            return true;
-        }
-
-        return false;
-    }
 
     const handleClick = (e) => {
         if (!!id) {
@@ -78,28 +56,38 @@ const BoardCard = ({ id = null, history }) => {
         }
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleBoardRemove = (e) => {
+        e.stopPropagation();
+        dispatch(boardRemove({ id }));
+    }
 
-        if (validate(newBoardTitle)){
-            dispatch(boardAdd({ title: newBoardTitle}));
-            setNewBoardTitle('')
-        }else{
-            setValidationError('Board title length must be less then 50 symbols')
-        }
+    const handleBoardEdit = (e) => {
+        e.stopPropagation();
+        // TODO: implement edit functionality 
+    }
+
+    const handleBoardAdd = () => {
+        dispatch(boardAdd({ title }));
+        setTitle('')
     }
 
     return (
         <Card dashed={!id} onClick={handleClick}>
-            {!!id && <Actions {...board} />}
+            {!!id && <ActionButtons onRemove={handleBoardRemove} onEdit={handleBoardEdit} />}
             {!!id && <>
                 <Title>{board.title}</Title>
             </>}
             {!id &&
-                <Form onSubmit={handleSubmit}>
-                <Input onChange={setNewBoardTitle} maxLength="50" value={newBoardTitle}></Input>
-                    <Button type="submit">Add new board</Button>
-                </Form>}
+                <InputForm
+                    onSubmit={handleBoardAdd}
+                    onChange={setTitle}
+                    maxLength="50"
+                    minLength="2"
+                    value={title}
+                    buttonText="Add new board"
+                    required={true}
+                />
+            }
         </Card>
     )
 }

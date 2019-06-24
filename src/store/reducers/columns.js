@@ -1,12 +1,18 @@
+import cuid from 'cuid';
+
 import {COLUMN_ADD, COLUMN_EDIT, COLUMN_REMOVE} from '../constants';
 
 const columns = (state = [], action) => {
     const {type, payload} = action;
     switch (type) {
         case COLUMN_ADD:
+            const id = cuid();
             return [
                 ...state,
-                payload
+                {
+                    id,
+                    ...payload
+                }
             ]
         case COLUMN_EDIT:
             return state.map(column=> {
