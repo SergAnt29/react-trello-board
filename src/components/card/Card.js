@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { withRouter } from "react-router";
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Draggable } from "react-beautiful-dnd";
 
 import TaskModal from '../shared/TaskModal';
 import ActionButtons from '../shared/ActionButtons';
@@ -56,7 +57,7 @@ const selectCardById = createSelector(
 )
 
 
-const Card = ({ id, columnId, index }) => {
+const Card = ({ id, columnId, index, history }) => {
     const [isModalOpen, toggleModalOpen] = useBooleanToggle(false);
     const [isEdit, toggleIsEdit] = useBooleanToggle(false);
     const card = useSelector(state => selectCardById(state, id));
@@ -88,9 +89,15 @@ const Card = ({ id, columnId, index }) => {
         dispatch(cardRemove({ id }))
     }
 
+    const handleRouter = () => {
+        if (!!id) {
+            history.push(`/cards/${id}`);
+        }
+    }
+
     const renderTicketCard = () => {
         return (
-            <TicketCard>
+            <TicketCard onClick={handleRouter}>
                 {!isModalOpen && <ActionButtons
                     onRemove={!!id ? handleCardRemove : false}
                     onEdit={!!id ? handleEditModal : false}
@@ -137,4 +144,4 @@ const Card = ({ id, columnId, index }) => {
     return renderTicketCard()
 }
 
-export default Card;
+export default withRouter(Card);
