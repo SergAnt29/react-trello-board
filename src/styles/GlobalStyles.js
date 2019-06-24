@@ -6,7 +6,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: Arial;
   }
 
-  input, button, div {
+  input, button, div, section {
     box-sizing: border-box;
   }
 `
