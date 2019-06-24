@@ -113,6 +113,7 @@ const Card = ({ id, columnId, index, history }) => {
                     oldTitle={card ? card.title : ''}
                     oldShortDescription={card ? card.shortDescription : ''}
                     oldDescription={card ? card.description : ''}
+                    isEdit={isEdit}
                 >
                 </TaskModal>
             </TicketCard>

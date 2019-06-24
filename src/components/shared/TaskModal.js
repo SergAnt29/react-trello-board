@@ -100,7 +100,7 @@ const ErrorMessage = styled.div`
     margin-top: 5px;
 `
 
-const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescription = '', oldDescription = '' }) => {
+const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescription = '', oldDescription = '', isEdit }) => {
     const [title, setTitle] = useInputHanldeChange(oldTitle);
     const [shortDescription, setShortDescription] = useInputHanldeChange(oldShortDescription);
     const [description, setDescription] = useInputHanldeChange(oldDescription);
@@ -120,20 +120,24 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
             .max(500, 'Please enter no more than 500 characters'),   
     })
 
-    const stopPropagation = (e) => e.stopPropagation()
+    const stopPropagation = (e) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation()
+    }
 
     return (
         <Modal
             isOpen={isOpen}
             style={style}
+            onClick={stopPropagation}
         >
             <Header>
                 <Title>
-                    Add new task
+                    {isEdit ? 'Edit' : 'Add new'} task
                 </Title>
                 <CloseButton onClick={closeModal}>X</CloseButton>
             </Header>
-            <Content>
+            <Content onClick={stopPropagation}>
                 <Formik
                     initialValues={{ title, shortDescription, description }}
                     onSubmit={handleSubmit}
@@ -197,7 +201,9 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
                                     />
                                     {errors.description && touched.description ? <ErrorMessage>{errors.description}</ErrorMessage> : null}
                                 </FormRow>
-                                <SubmitButton type="submit">Create</SubmitButton>
+                                <SubmitButton type="submit">
+                                    {isEdit ? 'Save' : 'Create'}
+                                </SubmitButton>
                             </Form>
                         )
                     }}
