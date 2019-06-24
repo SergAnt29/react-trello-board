@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import ActionButtons from '../shared/ActionButtons';
 import InputForm from '../shared/InputForm';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
-
+import useBooleanToggle from '../../hooks/useBooleanToggle';
 import { columnAdd, columnEdit, columnRemove } from '../../store/actions/columns';
 
 const ColumnWrapper = styled.div`
@@ -39,6 +39,12 @@ const Title = styled.h3`
     word-break: break-all;
 `
 
+const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
+
 const selectCardsByColumnId = createSelector(
     state => state.cards,
     (_, id) => id,
@@ -53,10 +59,10 @@ const selectColumnById = createSelector(
 
 const Column = ({ id, boardId, title }) => {
     const cards = useSelector(state => selectCardsByColumnId(state, id));
+    const [isEditable, toggleEditable] = useBooleanToggle(false);
     const column = useSelector(state => selectColumnById(state, id));
     const [columnTitle, setColumnTitle] = useInputHandleChange(title);
     const dispatch = useDispatch();
-    console.log('COLUMN', boardId)
 
     const handleColumnAdd = () => {
         dispatch(columnAdd(
@@ -73,30 +79,36 @@ const Column = ({ id, boardId, title }) => {
     }
 
     const handleColumnEdit = () => {
-        dispatch(columnEdit({ id }))
+        dispatch(columnEdit({ id,  title: columnTitle}))
+        toggleEditable();
     }
 
     return (
         <ColumnWrapper>
             <ColumnTag>
                 <Header dashed={!id}>
-                    <ActionButtons
+                    {!isEditable && <ActionButtons
                         onRemove={!!id ? handleColumnRemove : false}
-                        onEdit={!!id ? handleColumnEdit : false}
-                    />
-                    {!!title ?
+                        onEdit={!!id ? toggleEditable : false}
+                    />}
+                    {!!title && !isEditable ?
                         <Title>{title}</Title> :
                         <InputForm
-                            onSubmit={handleColumnAdd}
+                            onSubmit={isEditable ? handleColumnEdit : handleColumnAdd}
                             onChange={setColumnTitle}
                             maxLength="50"
                             minLength="2"
                             value={columnTitle}
-                            buttonText="Add new column"
+                            buttonText={isEditable ? 'Change column title' : 'Add new column'}
                             required={true}
                         />
                     }
                 </Header>
+                <Content>
+                    {cards.map(card => (
+                        <div>1111</div>
+                    ))}
+                </Content>
             </ColumnTag>
         </ColumnWrapper>
     )
