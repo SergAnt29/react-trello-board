@@ -38,7 +38,7 @@ const Board = ({ match }) => {
                 <Header title={`${board.title} | Board`}></Header>
                 <ColumnsWrapper>
                     {columns && columns.length > 0 && columns.map((column) => (
-                        <Column boardId={board.id} {...column}></Column>
+                        <Column key={column.id} boardId={board.id} {...column}></Column>
                     ))}
                     <Column boardId={board.id}></Column>
                 </ColumnsWrapper>
