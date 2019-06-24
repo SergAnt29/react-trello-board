@@ -11,7 +11,7 @@ import Card from '../card/Card';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
 import { columnAdd, columnEdit, columnRemove } from '../../store/actions/columns';
-import { cardMoveVertically } from '../../store/actions/cards';
+
 
 
 const ColumnWrapper = styled.div`
@@ -91,29 +91,7 @@ const Column = ({ id, boardId, title }) => {
         dispatch(columnEdit({ id, title: columnTitle }))
         toggleEditable();
     }
-
-    const onDragEnd = (e) => {
-
-        const { source, destination, draggableId } = e;
-
-        // dropped outside the list
-        if (!destination) {
-            return;
-        }
-
-        if (source.droppableId === destination.droppableId) {
-            dispatch(cardMoveVertically(
-                { 
-                    id: draggableId,
-                    columnId: source.droppableId, 
-                    source: source.index, 
-                    destination: destination.index 
-                }))
-        } else {
-
-        }
-    }
-
+    
     return (
         <ColumnWrapper>
             <ColumnTag>
@@ -135,13 +113,13 @@ const Column = ({ id, boardId, title }) => {
                         />
                     }
                 </Header>
-                <DragDropContext onDragEnd={onDragEnd}>
+                
                     {!!id && <Content>
                         <Droppable droppableId={id}>
                             {(provided, snapshot) => (
                                 <div
                                     ref={provided.innerRef}
-                                    style={{width:'100%',maxWidth:'100%'}}
+                                    style={{width:'100%',maxWidth:'100%', minHeight:'300px'}}
                                 >
                                     {cards.map((card, index) => (
                                         <Card key={card.id} {...card} columnId={id} index={index} />
@@ -153,8 +131,6 @@ const Column = ({ id, boardId, title }) => {
 
                         <Card columnId={id} />
                     </Content>}
-                </DragDropContext>
-
             </ColumnTag>
         </ColumnWrapper>
     )
