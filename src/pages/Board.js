@@ -30,17 +30,17 @@ const selectColumnsByBoardId = createSelector(
 
 const Board = ({ match }) => {
     const board = useSelector((state) => selectBoardByAlias(state, match.params.alias))
-    const columns = useSelector((state) => selectColumnsByBoardId(state, board.id))
+    const columns = useSelector((state) => selectColumnsByBoardId(state, board ? board.id : null))
 
     return (
         <Page>
             <FullWidthContainer>
-                <Header title={`${board.title} | Board`}></Header>
+                <Header title={`${board ? board.title + ' |': ''} Board`}></Header>
                 <ColumnsWrapper>
-                    {columns && columns.length > 0 && columns.map((column) => (
+                    {board && columns && columns.length > 0 && columns.map((column) => (
                         <Column key={column.id} boardId={board.id} {...column}></Column>
                     ))}
-                    <Column boardId={board.id}></Column>
+                    <Column boardId={board ? board.id : null}></Column>
                 </ColumnsWrapper>
             </FullWidthContainer>
         </Page>
