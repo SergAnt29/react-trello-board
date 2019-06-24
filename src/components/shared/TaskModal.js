@@ -120,6 +120,8 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
             .max(500, 'Please enter no more than 500 characters'),   
     })
 
+    const stopPropagation = (e) => e.stopPropagation()
+
     return (
         <Modal
             isOpen={isOpen}
@@ -155,7 +157,8 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
                                     <Label htmlFor="title">
                                         Title
                                     </Label>
-                                    <Input 
+                                    <Input
+                                        onClick={stopPropagation}
                                         value={values.title} 
                                         onChange={handleChange}
                                         onBlur={handleBlur} 
@@ -170,6 +173,7 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
                                         Short Description
                                     </Label>
                                     <TextArea 
+                                        onClick={stopPropagation}
                                         value={values.shortDescription} 
                                         onChange={handleChange}
                                         onBlur={handleBlur} 
@@ -184,6 +188,7 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
                                         Description
                                     </Label>
                                     <BigTextArea 
+                                        onClick={stopPropagation}
                                         value={values.description} 
                                         onChange={handleChange}
                                         onBlur={handleBlur} 

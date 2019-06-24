@@ -7,6 +7,7 @@ import {
 
 import Dashboard from './pages/Dashboard';
 import Board from './pages/Board';
+import Card from './pages/Card';
 import GlobalStyles from './styles/GlobalStyles';
 
 
@@ -17,8 +18,8 @@ const App = () => {
       <Router >
         <Switch>
           <Route path="/" exact component={Dashboard}/>
-          <Route path="/boards/:alias" component={Board}/>
-          {/* <Route path="/card/:id" exact component={}/> */}
+          <Route path="/boards/:alias" exact component={Board}/>
+          <Route path="/cards/:id" exact component={Card}/>
         </Switch>
       </Router>
     </Provider>

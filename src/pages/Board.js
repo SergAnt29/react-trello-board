@@ -3,8 +3,8 @@ import { createSelector } from 'reselect';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { cardMoveVertically, cardMoveHorizontally, cardInsertIntoColumn, cardUpdateIndex } from './../store/actions/cards';
+import { DragDropContext } from "react-beautiful-dnd";
+import { cardMoveVertically, cardMoveHorizontally } from './../store/actions/cards';
 
 import Column from '../components/column/Column';
 import Header from '../components/Header';

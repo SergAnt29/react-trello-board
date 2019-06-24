@@ -8,6 +8,7 @@ import { Draggable } from "react-beautiful-dnd";
 import TaskModal from '../shared/TaskModal';
 import ActionButtons from '../shared/ActionButtons';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
+import {selectCardById} from '../../selectors/card';
 import { cardAdd, cardRemove, cardEdit } from '../../store/actions/cards';
 
 
@@ -50,20 +51,14 @@ const Button = styled.button`
     max-width: 100px;
 `
 
-const selectCardById = createSelector(
-    state => state.cards,
-    (_, id) => id,
-    (cards, id) => cards.find(card => card.id === id)
-)
-
-
 const Card = ({ id, columnId, index, history }) => {
     const [isModalOpen, toggleModalOpen] = useBooleanToggle(false);
     const [isEdit, toggleIsEdit] = useBooleanToggle(false);
     const card = useSelector(state => selectCardById(state, id));
     const dispatch = useDispatch();
 
-    const handleEditModal = () => {
+    const handleEditModal = (e) => {
+        e.stopPropagation();
         toggleIsEdit();
         toggleModalOpen()
     }
@@ -85,7 +80,8 @@ const Card = ({ id, columnId, index, history }) => {
         toggleModalOpen()
     }
 
-    const handleCardRemove = () => {
+    const handleCardRemove = (e) => {
+        e.stopPropagation();
         dispatch(cardRemove({ id }))
     }
 
