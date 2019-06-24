@@ -26,11 +26,12 @@ const cardEdit = (payload) => {
     }
 }
 
-const cardMoveVertically = ({id, source, destination}) => {
+const cardMoveVertically = ({id,columnId, source, destination}) => {
     return {
         type:CARD_MOVE_IN_COLUMN,
         payload:{
             id,
+            columnId,
             source,
             destination
         }

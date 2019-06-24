@@ -93,7 +93,8 @@ const Column = ({ id, boardId, title }) => {
     }
 
     const onDragEnd = (e) => {
-        const { source, destination } = e;
+
+        const { source, destination, draggableId } = e;
 
         // dropped outside the list
         if (!destination) {
@@ -103,7 +104,8 @@ const Column = ({ id, boardId, title }) => {
         if (source.droppableId === destination.droppableId) {
             dispatch(cardMoveVertically(
                 { 
-                    id: source.droppableId, 
+                    id: draggableId,
+                    columnId: source.droppableId, 
                     source: source.index, 
                     destination: destination.index 
                 }))
@@ -139,6 +141,7 @@ const Column = ({ id, boardId, title }) => {
                             {(provided, snapshot) => (
                                 <div
                                     ref={provided.innerRef}
+                                    style={{width:'100%',maxWidth:'100%'}}
                                 >
                                     {cards.map((card, index) => (
                                         <Card key={card.id} {...card} columnId={id} index={index} />

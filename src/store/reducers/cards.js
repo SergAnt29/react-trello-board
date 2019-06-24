@@ -20,15 +20,24 @@ const cards = (state = [], action) => {
 
             ];
         case CARD_MOVE_IN_COLUMN:
-            const columnCards = state.filter(card => card.columnId ===  payload.id)
-            const otherCards = state.filter(card => card.columnId !==  payload.id)
+            const columnCards = state.filter(card => card.columnId ===  payload.columnId)
+            const otherCards = state.filter(card => card.columnId !==  payload.columnId)
+            const direction = payload.source < payload.destination ? 'down' : 'up';
             const updatedColumnCards = columnCards.map(card => {
-                if(card.index === payload.source){
-                    return {...card, index: payload.destination}
+                if(direction === 'down'){
+                    if(card.index <= payload.destination && card.index > payload.source){
+                        return {...card, index: card.index - 1 }
+                    }
+                    return card;
+                }else if (direction === 'up'){
+                    if(card.index < payload.source && card.index <= payload.destination){
+                        return {...card, index: card.index + 1 }
+                    }
+                    return card;
                 }
-
-                if(card.index === payload.destination){
-                    return {...card, index: payload.source}
+            }).map(card => {
+                if(card.id === payload.id){
+                    return {...card, index: payload.destination}
                 }
 
                 return card;
