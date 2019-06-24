@@ -13,11 +13,15 @@ const style = {
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '700px',
-        heigth: '500px',
+        width: '90vw',
+        height: '90vh',
+        maxWidth: '900px',
+        maxHeight: '900px',
         display: 'flex',
         flexDirection: 'column',
-        flex: '1 0 100%'
+        flex: '1 0 100%',
+        boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.25)',
+
     }
 }
 
@@ -43,8 +47,37 @@ const Content = styled.div`
     justify-content: space-between;
 `
 
+const Form = styled.form`
+    width: 100%;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+`
+
 const Label = styled.label`
     color: grey;
+    margin-bottom: 5px;
+`
+
+const Input = styled.input`
+    width: 100%;
+    border-color: ${props => props.error ? 'red' : 'black'};
+    border-style: solid;
+    border-width: 1px;
+`
+
+const TextArea = styled.textarea`
+    width: 100%;
+    border-color: ${props => props.error ? 'red' : 'black'};
+    border-style: solid;
+    border-width: 1px;
+    resize: none;
+    height: 50px;
+`
+const BigTextArea = styled(TextArea)`
+    height: 150px;
 `
 
 const FormRow = styled.div`
@@ -52,24 +85,27 @@ const FormRow = styled.div`
     flex-direction: column;
     align-items: flex-start;
     margin-top: 20px;
+    width: 100%;
 `
 
 const SubmitButton = styled.button`
     margin-top: auto;
+    margin-left: auto;
 `
 
 const ErrorMessage = styled.div`
     color: red;
     font-size:0.7rem;
+    margin-top: 5px;
 `
 
-const TaskModal = ({ isOpen, closeModal, oldTitle = '', oldShortDescription = '', oldDescription = '' }) => {
+const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescription = '', oldDescription = '' }) => {
     const [title, setTitle] = useInputHanldeChange(oldTitle);
     const [shortDescription, setShortDescription] = useInputHanldeChange(oldShortDescription);
     const [description, setDescription] = useInputHanldeChange(oldDescription);
 
-    const handleSubmit = (e) => {
-        console.log('ONSUBMIT',e)
+    const handleSubmit = (values) => {
+        onSubmit(values)
     }
 
     const validationSchema = Yup.object().shape({
@@ -113,17 +149,17 @@ const TaskModal = ({ isOpen, closeModal, oldTitle = '', oldShortDescription = ''
                             handleReset
                         } = props;
                         return (
-                            <form onSubmit={handleSubmit}>
+                            <Form onSubmit={handleSubmit}>
                                 <FormRow>
                                     <Label htmlFor="title">
                                         Title
                                     </Label>
-                                    <Field 
-                                        component="input" 
+                                    <Input 
                                         value={values.title} 
                                         onChange={handleChange}
                                         onBlur={handleBlur} 
                                         name="title" 
+                                        error={errors.title}
                                     />
                                     {errors.title && touched.title ? <ErrorMessage>{errors.title}</ErrorMessage> : null}
                                 </FormRow>
@@ -132,30 +168,31 @@ const TaskModal = ({ isOpen, closeModal, oldTitle = '', oldShortDescription = ''
                                     <Label htmlFor="shortDescription" >
                                         Short Description
                                     </Label>
-                                    <Field 
-                                        component="textarea" 
+                                    <TextArea 
                                         value={values.shortDescription} 
                                         onChange={handleChange}
                                         onBlur={handleBlur} 
-                                        name="shortDescription" 
+                                        name="shortDescription"
+                                        error={errors.shortDescription}
                                     />
+                                    {errors.shortDescription && touched.shortDescription ? <ErrorMessage>{errors.shortDescription}</ErrorMessage> : null}
                                 </FormRow>
 
                                 <FormRow>
                                     <Label htmlFor="description">
                                         Description
                                     </Label>
-                                    <Field 
-                                        component="textarea" 
+                                    <BigTextArea 
                                         value={values.description} 
                                         onChange={handleChange}
                                         onBlur={handleBlur} 
                                         name="description" 
+                                        error={errors.description}
                                     />
+                                    {errors.description && touched.description ? <ErrorMessage>{errors.description}</ErrorMessage> : null}
                                 </FormRow>
                                 <SubmitButton type="submit">Create</SubmitButton>
-                            </form>
-
+                            </Form>
                         )
                     }}
                 </Formik>
