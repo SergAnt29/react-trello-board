@@ -1,12 +1,20 @@
+import cuid from 'cuid';
+
 import { CARD_ADD, CARD_EDIT, CARD_REMOVE, CARD_MOVE_IN_COLUMN, CARD_MOVE_BETWEEN_COLUMNS } from '../constants';
 
 const cards = (state = [], action) => {
     const { type, payload } = action;
     switch (type) {
         case CARD_ADD:
+            const id = cuid();
+
             return [
                 ...state,
-                payload
+                {   
+                    id,
+                    ...payload
+                }
+                
             ]
         case CARD_MOVE_IN_COLUMN:
         case CARD_MOVE_BETWEEN_COLUMNS:
