@@ -4,8 +4,9 @@ import {createSelector} from 'reselect';
 import styled from 'styled-components';
 
 import TaskModal from '../shared/TaskModal';
+import ActionButtons from '../shared/ActionButtons';
 import useBooleanToggle from '../../hooks/useBooleanToggle';
-import {cardAdd} from '../../store/actions/cards';
+import {cardAdd, cardRemove, cardEdit} from '../../store/actions/cards';
 
 
 const TicketCard = styled.section`
@@ -17,10 +18,7 @@ const TicketCard = styled.section`
     padding: 10px;
     display: flex;
     flex-direction: column;
-`
-
-const Header = styled.header`
-
+    position: relative;
 `
 
 const Title = styled.h4`
@@ -43,6 +41,7 @@ const Content = styled.div`
     flex-direction: column;
     justify-content: ${props => props.empty ? 'center' : 'flex-start'};
     align-items:center;
+    margin-top: 20px;
 `
 
 const Button = styled.button`
@@ -58,10 +57,25 @@ const selectCardById = createSelector(
 
 const Card = ({ id, columnId }) => {
     const [isModalOpen, toggleModalOpen] = useBooleanToggle(false);
+    const [isEdit, toggleIsEdit] = useBooleanToggle(false);
     const card = useSelector(state => selectCardById(state, id));
     const dispatch = useDispatch();
 
-    const handleAddNewCard = (payload) => {
+    const handleEditModal = () => {
+        toggleIsEdit();
+        toggleModalOpen()
+    }
+
+    const handleCardEdit = (payload) => {
+        dispatch(cardEdit({
+            id,
+            ...payload,
+        }))
+        toggleModalOpen()
+        toggleIsEdit();
+    }
+
+    const handleCardAdd = (payload) => {
         dispatch(cardAdd({
             columnId,
             ...payload,
@@ -69,9 +83,16 @@ const Card = ({ id, columnId }) => {
         toggleModalOpen()
     }
 
+    const handleCardRemove = () => {
+        dispatch(cardRemove({id}))
+    }
+
     return (
         <TicketCard>
-            <Header></Header>
+             {!isModalOpen && <ActionButtons
+                    onRemove={!!id ? handleCardRemove : false}
+                    onEdit={!!id ? handleEditModal : false}
+                />}
             <Content empty={!id}>
                 {!!id && <>
                     <Title>{card.title}</Title>
@@ -80,7 +101,14 @@ const Card = ({ id, columnId }) => {
                 
                 {!id && <Button onClick={toggleModalOpen}>Add new card</Button>}
             </Content>
-            <TaskModal isOpen={isModalOpen} closeModal={toggleModalOpen} onSubmit={handleAddNewCard}>
+            <TaskModal 
+                isOpen={isModalOpen} 
+                closeModal={toggleModalOpen} 
+                onSubmit={isEdit ? handleCardEdit : handleCardAdd}
+                oldTitle={card ? card.title : ''}
+                oldShortDescription={card? card.shortDescription : ''}
+                oldDescription={card? card.description : ''}
+            >
             </TaskModal>
         </TicketCard>
     )
