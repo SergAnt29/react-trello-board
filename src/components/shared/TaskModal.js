@@ -1,10 +1,20 @@
 import React from 'react'
 import Modal from 'react-modal';
 import styled from 'styled-components';
-import { Formik, Field } from "formik";
-import * as Yup from 'yup';
+import { Formik } from "formik";
 
+import cardValidationSchema from '../../validation/card'
 import useInputHanldeChange from '../../hooks/useInputHandleChange';
+import  {
+    Form,
+    Label,
+    Input,
+    TextArea,
+    BigTextArea,
+    FormRow,
+    SubmitButton,
+    ErrorMessage,
+} from '../../ui/form';
 
 Modal.setAppElement('#root')
 
@@ -47,58 +57,6 @@ const Content = styled.div`
     justify-content: space-between;
 `
 
-const Form = styled.form`
-    width: 100%;
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-`
-
-const Label = styled.label`
-    color: grey;
-    margin-bottom: 5px;
-`
-
-const Input = styled.input`
-    width: 100%;
-    border-color: ${props => props.error ? 'red' : 'black'};
-    border-style: solid;
-    border-width: 1px;
-`
-
-const TextArea = styled.textarea`
-    width: 100%;
-    border-color: ${props => props.error ? 'red' : 'black'};
-    border-style: solid;
-    border-width: 1px;
-    resize: none;
-    height: 50px;
-    font-family: Arial, Helvetica, sans-serif;
-`
-const BigTextArea = styled(TextArea)`
-    height: 150px;
-`
-
-const FormRow = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-top: 20px;
-    width: 100%;
-`
-
-const SubmitButton = styled.button`
-    margin-top: auto;
-    margin-left: auto;
-`
-
-const ErrorMessage = styled.div`
-    color: red;
-    font-size:0.7rem;
-    margin-top: 5px;
-`
 
 const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescription = '', oldDescription = '', isEdit }) => {
     const [title, setTitle] = useInputHanldeChange(oldTitle);
@@ -108,17 +66,6 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
     const handleSubmit = (values) => {
         onSubmit(values)
     }
-
-    const validationSchema = Yup.object().shape({
-        title: Yup.string()
-            .max(50, 'Please enter no more than 50 characters')
-            .min(2, 'Please enter no less than 2 characters')
-            .required('Please enter task title'),
-        shortDescription: Yup.string()
-            .max(100, 'Please enter no more than 100 characters'),
-        shortDescription: Yup.string()
-            .max(500, 'Please enter no more than 500 characters'),   
-    })
 
     const stopPropagation = (e) => {
         e.stopPropagation();
@@ -141,7 +88,7 @@ const TaskModal = ({ isOpen, closeModal, onSubmit, oldTitle = '', oldShortDescri
                 <Formik
                     initialValues={{ title, shortDescription, description }}
                     onSubmit={handleSubmit}
-                    validationSchema={validationSchema}
+                    validationSchema={cardValidationSchema}
                 >
                     {props => {
                         const {

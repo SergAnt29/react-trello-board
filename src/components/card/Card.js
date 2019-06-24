@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from "react-router";
-import { createSelector } from 'reselect';
 import styled from 'styled-components';
 import { Draggable } from "react-beautiful-dnd";
 

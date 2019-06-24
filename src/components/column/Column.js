@@ -69,7 +69,7 @@ const selectColumnById = createSelector(
 const Column = ({ id, boardId, title }) => {
     const cards = useSelector(state => selectCardsByColumnId(state, id));
     const [isEditable, toggleEditable] = useBooleanToggle(false);
-    const column = useSelector(state => selectColumnById(state, id));
+
     const [columnTitle, setColumnTitle] = useInputHandleChange(title);
     const dispatch = useDispatch();
 
