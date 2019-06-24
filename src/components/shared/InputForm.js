@@ -47,7 +47,7 @@ const InputForm = ({ onSubmit, ...rest }) => {
         if (validate(value)) {
             onSubmit()
         } else {
-            setValidationError('Board title length must be between 2 and 50 symbols')
+            setValidationError('Input text length must be between 2 and 50 symbols')
         }
     }
 
