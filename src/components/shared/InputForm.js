@@ -32,6 +32,8 @@ const InputForm = ({ onSubmit, ...rest }) => {
 
     // JS validation in case if html validation will be disabled
     const validate = (value) => {
+        value = value.trim();
+
         if (value.length >= minLength && value.length <= maxLength) {
             return true;
         }
