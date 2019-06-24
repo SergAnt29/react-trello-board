@@ -4,10 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect'
 import { withRouter } from "react-router";
 
-import Actions from './BoardCardActions';
+import ActionButtons from '../ActionButtons';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
 
-import { boardAdd } from '../../store/actions/boards';
+import { boardAdd, boardRemove } from '../../store/actions/boards';
 
 const selectBoardById = createSelector(
     state => state.boards,
@@ -89,11 +89,21 @@ const BoardCard = ({ id = null, history }) => {
         }
     }
 
+    const handleBoardRemove = (e) => {
+        e.stopPropagation();
+        dispatch(boardRemove({id}));
+    }
+
+    const handleBoardEdit = (e) => {
+        e.stopPropagation();
+        // TODO: implement edit functionality 
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (validate(title)){
-            dispatch(boardAdd({ title: title}));
+            dispatch(boardAdd({ title}));
             settitle('')
         }else{
             setValidationError('Board title length must be equal or greater then 2 symbols')
@@ -102,7 +112,7 @@ const BoardCard = ({ id = null, history }) => {
 
     return (
         <Card dashed={!id} onClick={handleClick}>
-            {!!id && <Actions {...board} />}
+            {!!id && <ActionButtons onRemove={handleBoardRemove} onEdit={handleBoardEdit}/>}
             {!!id && <>
                 <Title>{board.title}</Title>
             </>}

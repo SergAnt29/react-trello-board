@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 
-import { boardRemove } from '../../store/actions/boards';
+import { boardRemove } from '../store/actions/boards';
 
 const ActionsWrapper = styled.div`
     position: absolute;
@@ -12,25 +12,21 @@ const ActionsWrapper = styled.div`
     right:0;
     display: flex;
     justify-content: flex-end;
+    
 `
 
 const Button = styled.button`
-    cursor: pointer;
+    cursor: pointer; 
 `
 
-const BoardCardActions = ({ id }) => {
-    const dispatch = useDispatch()
-
-    const handleClick = (action, e) => {
-        e.stopPropagation();
-        dispatch(action({ id }))
-    }
+const ActionButtons = ({onRemove=false, onEdit=false }) => {
 
     return (
         <ActionsWrapper>
-            <Button onClick={(e) => handleClick(boardRemove, e)}>Remove</Button>
+            {!!onEdit && <Button onClick={onEdit}>Edit</Button>}
+            {!!onRemove && <Button onClick={onRemove}>Remove</Button>}
         </ActionsWrapper>
     )
 }
 
-export default BoardCardActions;
+export default ActionButtons;
