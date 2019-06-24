@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { createSelector } from 'reselect'
@@ -6,7 +6,6 @@ import { withRouter } from "react-router";
 
 import Actions from './BoardCardActions';
 import useInputHandleChange from '../../hooks/useInputHandleChange';
-import useBooleanToggle from '../../hooks/useBooleanToggle';
 
 import { boardAdd } from '../../store/actions/boards';
 
@@ -17,6 +16,8 @@ const selectBoardById = createSelector(
 )
 
 const Card = styled.section`
+    flex-direction: column;
+    align-items:center;
     box-sizing: border-box;
     border: 1px solid black;
     border-radius: 5px;
@@ -24,8 +25,8 @@ const Card = styled.section`
     width: 100%;
     position: relative;
     border-style: ${props => props.dashed ? "dashed" : "solid"};
-    padding: 10px;
-    cursor: ${props => props.dashed ? "normal" : "pointer"};
+    padding: 10px 20px;
+    cursor: ${props => props.dashed ? "auto" : "pointer"};
     box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.25);
     transition: box-shadow 0.16s ease-out;
     display: flex;
@@ -45,10 +46,10 @@ const Title = styled.h2`
 `
 
 const Form = styled.form`
-    width:90%;
     display:flex;
     flex-direction:column;
     align-items:center;
+    width:100%;
 `
 const Button = styled.button`
     width:100%;
@@ -58,14 +59,24 @@ const Input = styled.input`
     width:100%;
 `
 
+const ErrorMessage = styled.p`
+    color: red;
+    font-size: 0.7rem;
+`
+
 const BoardCard = ({ id = null, history }) => {
-    const [newBoardTitle, setNewBoardTitle] = useInputHandleChange('');
+    const [title, settitle] = useInputHandleChange('');
     const [validationError, setValidationError] = useState(false);
     const board = useSelector(state => selectBoardById(state, id));
     const dispatch = useDispatch()
 
+    // Validation error reset on title typing
+    useEffect(() => {
+        setValidationError(false)
+    }, [title])
+
     const validate = (value) => {
-        if (value.length <= 50){
+        if (value.length > 2){
             return true;
         }
 
@@ -81,11 +92,11 @@ const BoardCard = ({ id = null, history }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (validate(newBoardTitle)){
-            dispatch(boardAdd({ title: newBoardTitle}));
-            setNewBoardTitle('')
+        if (validate(title)){
+            dispatch(boardAdd({ title: title}));
+            settitle('')
         }else{
-            setValidationError('Board title length must be less then 50 symbols')
+            setValidationError('Board title length must be equal or greater then 2 symbols')
         }
     }
 
@@ -97,9 +108,10 @@ const BoardCard = ({ id = null, history }) => {
             </>}
             {!id &&
                 <Form onSubmit={handleSubmit}>
-                <Input onChange={setNewBoardTitle} maxLength="50" value={newBoardTitle}></Input>
+                <Input onChange={settitle} maxLength="50" value={title}></Input>
                     <Button type="submit">Add new board</Button>
                 </Form>}
+            {!!validationError && <ErrorMessage>{validationError}</ErrorMessage>}
         </Card>
     )
 }
