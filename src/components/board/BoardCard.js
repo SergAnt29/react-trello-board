@@ -9,29 +9,23 @@ import useInputHandleChange from '../../hooks/useInputHandleChange';
 import InputForm from '../shared/InputForm';
 import { boardAdd, boardRemove } from '../../store/actions/boards';
 
-const selectBoardById = createSelector(
-    state => state.boards,
-    (_, id) => id,
-    (boards, id) => boards.find(board => board.id === id)
-)
-
 const Card = styled.section`
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
-    align-items:center;
     box-sizing: border-box;
-    border: 1px solid black;
+    border-width: 1px;
+    border-color: black;
+    border-style: ${props => props.dashed ? "dashed" : "solid"};
     border-radius: 5px;
     min-height: 100px;
     width: 100%;
-    position: relative;
-    border-style: ${props => props.dashed ? "dashed" : "solid"};
     padding: 10px 20px;
     cursor: ${props => props.dashed ? "auto" : "pointer"};
     box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.25);
     transition: box-shadow 0.16s ease-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-bottom: 10px;
     margin-top:10px;
     &:hover {
@@ -45,24 +39,11 @@ const Title = styled.h2`
     word-break: break-all;
 `
 
-const Form = styled.form`
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    width:100%;
-`
-const Button = styled.button`
-    width:100%;
-    margin-top: 10px;
-`
-const Input = styled.input`
-    width:100%;
-`
-
-const ErrorMessage = styled.p`
-    color: red;
-    font-size: 0.7rem;
-`
+const selectBoardById = createSelector(
+    state => state.boards,
+    (_, id) => id,
+    (boards, id) => boards.find(board => board.id === id)
+)
 
 const BoardCard = ({ id = null, history }) => {
     const [title, setTitle] = useInputHandleChange('');
