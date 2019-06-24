@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "cuid": "^2.1.6",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^11.0.4",
     "react-dom": "^16.8.6",
     "react-modal": "^3.8.1",
     "react-redux": "^7.1.0",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "redux": "^4.0.1",
+    "reselect": "^4.0.0",
     "styled-components": "^4.3.2"
   },
   "scripts": {
